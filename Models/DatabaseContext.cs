@@ -7,6 +7,8 @@ namespace GameNightWithFriends.Models
 {
     public partial class DatabaseContext : DbContext
     {
+        public DbSet<GameNight> GameNights { get; set; }
+
         // Change this if you want to have a different database name in development
         private static string DEVELOPMENT_DATABASE_NAME = "GameNightWithFriendsDatabase";
 
