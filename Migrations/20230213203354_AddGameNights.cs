@@ -10,6 +10,7 @@ namespace GameNightWithFriends.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            //This is code to create table, all auto generated for us by running ef migrations Add NameOfTable
             migrationBuilder.CreateTable(
                 name: "GameNights",
                 columns: table => new
