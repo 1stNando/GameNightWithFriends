@@ -19,10 +19,10 @@ namespace GameNightWithFriends.Controllers
         // This is the variable you use to have access to your database
         private readonly DatabaseContext _context;
 
-        // Constructor that receives a reference to your database context
-        // and stores it in _context for you to use in your API methods
+        // Constructor!!! that receives a reference to your database context
+        // and stores it in _context for you to use in your API methods.
         public GameNightsController(DatabaseContext context)
-        {
+        {   //save a copy of the _context
             _context = context;
         }
 
@@ -31,10 +31,15 @@ namespace GameNightWithFriends.Controllers
         // Returns a list of all your GameNights
         //
         [HttpGet]
+        //Task wraps the thing we are returning, the ACTION RESULT, gives 
+        //a status code and data. ie 200.http. In this case the ienumerable returned GameNight. A more abstract type of List<>.
         public async Task<ActionResult<IEnumerable<GameNight>>> GetGameNights()
         {
             // Uses the database context in `_context` to request all of the GameNights, sort
             // them by row id and return them as a JSON array.
+            //.ToListAsync() allows for MANY users to be able to access the same URL
+            //and be able to work on many requests from different users at the same time.
+            //await makes the whole GET request 
             return await _context.GameNights.OrderBy(row => row.Id).ToListAsync();
         }
 
@@ -45,6 +50,7 @@ namespace GameNightWithFriends.Controllers
         // to grab the id from the URL. It is then made available to us as the `id` argument to the method.
         //
         [HttpGet("{id}")]
+        //note this does not return a "List<>" but instead a singe "GameNight".
         public async Task<ActionResult<GameNight>> GetGameNight(int id)
         {
             // Find the gameNight in the database using `FindAsync` to look it up by id
@@ -53,7 +59,7 @@ namespace GameNightWithFriends.Controllers
             // If we didn't find anything, we receive a `null` in return
             if (gameNight == null)
             {
-                // Return a `404` response to the client indicating we could not find a gameNight with this id
+                // Return a `404` response to the client indicating we could not find a gameNight with this id. Not found comes from Controller functionality. 
                 return NotFound();
             }
 
@@ -77,6 +83,12 @@ namespace GameNightWithFriends.Controllers
         {
             // If the ID in the URL does not match the ID in the supplied request body, return a bad request
             if (id != gameNight.Id)
+            {
+                return BadRequest();
+            }
+
+            //Later added a code to make sure one players games can not be added.
+            if (gameNight.MinimumNumberOfPlayers < 2)
             {
                 return BadRequest();
             }
