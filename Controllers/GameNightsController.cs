@@ -90,7 +90,8 @@ namespace GameNightWithFriends.Controllers
             //Later added a code to make sure one players games can not be added.
             if (gameNight.MinimumNumberOfPlayers < 2)
             {
-                return BadRequest();
+                var badRequestMessage = new { Message = "You need at least two players!" };
+                return BadRequest(badRequestMessage);
             }
 
             // Tell the database to consider everything in gameNight to be _updated_ values. When
@@ -136,6 +137,13 @@ namespace GameNightWithFriends.Controllers
         [HttpPost]
         public async Task<ActionResult<GameNight>> PostGameNight(GameNight gameNight)
         {
+            //Later added a code to make sure one players games can not be added.
+            if (gameNight.MinimumNumberOfPlayers < 2)
+            {
+                var badRequestMessage = new { Message = "You need at least two players!" };
+                return BadRequest(badRequestMessage);
+            }
+
             // Indicate to the database context we want to add this new record
             _context.GameNights.Add(gameNight);
             await _context.SaveChangesAsync();
