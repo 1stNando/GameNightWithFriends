@@ -138,6 +138,7 @@ namespace GameNightWithFriends.Controllers
         public async Task<ActionResult<GameNight>> PostGameNight(GameNight gameNight)
         {
             //Later added a code to make sure one players games can not be added.
+            //often called A GUARD CLAUS.
             if (gameNight.MinimumNumberOfPlayers < 2)
             {
                 var badRequestMessage = new { Message = "You need at least two players!" };

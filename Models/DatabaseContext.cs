@@ -9,6 +9,7 @@ namespace GameNightWithFriends.Models
     {
         // Add database tables here
         public DbSet<GameNight> GameNights { get; set; }
+        public DbSet<Player> Players { get; set; }
 
         // Change this if you want to have a different database name in development
         private static string DEVELOPMENT_DATABASE_NAME = "GameNightWithFriendsDatabase";
