@@ -17,10 +17,12 @@ namespace GameNightWithFriends.Controllers
     public class GameNightsController : ControllerBase
     {
         // This is the variable you use to have access to your database
+        //Underscore means private detail not to be used outside of this class.
         private readonly DatabaseContext _context;
 
         // Constructor!!! that receives a reference to your database context
         // and stores it in _context for you to use in your API methods.
+        //Dependency Injection!!!
         public GameNightsController(DatabaseContext context)
         {   //save a copy of the _context
             _context = context;
@@ -37,10 +39,12 @@ namespace GameNightWithFriends.Controllers
         {
             // Uses the database context in `_context` to request all of the GameNights, sort
             // them by row id and return them as a JSON array.
+
             //.ToListAsync() allows for MANY users to be able to access the same URL
             //and be able to work on many requests from different users at the same time.
-            //await makes the whole GET request 
-            return await _context.GameNights.OrderBy(row => row.Id).ToListAsync();
+            //await makes the whole GET request
+            //Added Include() to also be able to return the different players inside the game requested.
+            return await _context.GameNights.OrderBy(row => row.Id).Include(gameNight => gameNight.Players).ToListAsync();
         }
 
         // GET: api/GameNights/5
@@ -94,6 +98,7 @@ namespace GameNightWithFriends.Controllers
                 return BadRequest(badRequestMessage);
             }
 
+            //More advanced EF:
             // Tell the database to consider everything in gameNight to be _updated_ values. When
             // the save happens the database will _replace_ the values in the database with the ones from gameNight
             _context.Entry(gameNight).State = EntityState.Modified;
@@ -177,7 +182,7 @@ namespace GameNightWithFriends.Controllers
             // Tell the database to perform the deletion
             await _context.SaveChangesAsync();
 
-            // Return a copy of the deleted data
+            // Return a copy of the deleted data, '200' action result
             return Ok(gameNight);
         }
 
@@ -193,6 +198,7 @@ namespace GameNightWithFriends.Controllers
             //First, lets find the game night (by using the ID)
             var gameNight = await _context.GameNights.FindAsync(id);
 
+            //This is like another GUARD CLAUSE...
             //If the game doesn't exist: return a 404 Not found.
             if (gameNight == null)
             {
